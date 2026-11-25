@@ -1,12 +1,12 @@
 # Kaldırım: Paving Simulator
 
-![Kaldırım: Paving Simulator — a coastal town square being paved, stone by stone](marketing/crazygames/cover-landscape-1920x1080.png)
+![Kaldırım: Paving Simulator: a coastal town square being paved, stone by stone](marketing/crazygames/cover-landscape-1920x1080.png)
 
 **One stone. Then a row. Then the whole street.**
 
-A first-person paving simulator that runs entirely in the browser. You are a paving contractor in a small coastal town: five large jobs, leased equipment, and tens of thousands of stones — every single one placed by you, by hand or by machine.
+A first-person paving simulator that runs entirely in the browser. You are a paving contractor in a small coastal town: five large jobs, leased equipment, and tens of thousands of stones, every single one placed by you, by hand or by machine.
 
-**[▶ Play now — free, no install, no account](https://kaldirim.space.fast/)**
+**[▶ Play now: free, no install, no account](https://kaldirim.space.fast/)**
 
 ## Screenshots
 
@@ -19,10 +19,10 @@ All imagery is captured from the game itself; there are no external assets to ph
 ## The game
 
 - **Big jobs from the first minute.** No training levels, no tiny demos: five complete jobs, from an 11,712-stone seaside sidewalk to a 42,380-stone old-town courtyard.
-- **Wages per stone, not per minute.** Every unique stone you lay pays during the job. Leased equipment and upgrades reset only when you start a different or replayed job — closing the browser never wipes your work.
+- **Wages per stone, not per minute.** Every unique stone you lay pays during the job. Leased equipment and upgrades reset only when you start a different or replayed job. Closing the browser never wipes your work.
 - **Honest mechanics.** Paving requires a stable, reachable footprint and a timed working motion. Sweeping the cursor over the ground paints nothing and pays nothing.
 - **Everything procedural.** All geometry, materials, environment and tools are generated with Three.js. All sound is synthesized with Web Audio. No external models, textures or music; no runtime AI requests.
-- **Respectful of the player.** Turkish and English UI, pause anywhere, keyboard access, reduced-motion setting, offline service worker, exportable validated save files. No accounts, no ads of its own, nothing that identifies a player — the standalone build sends nothing at all.
+- **Respectful of the player.** Turkish and English UI, pause anywhere, keyboard access, reduced-motion setting, offline service worker, exportable validated save files. No accounts, no ads of its own, nothing that identifies a player. The standalone build sends nothing at all.
 
 ## Jobs
 
@@ -45,7 +45,7 @@ Wages are earned inside the job and spent inside the job. Better tools cover mor
 | Row Layer | 18 |
 | K-48 Paving Machine | 48 |
 
-Upgrades: carrying capacity, working speed, mobile supplies, working reach and a wider paving head. Materials are always free — you are paid for labor, not shopping.
+Upgrades: carrying capacity, working speed, mobile supplies, working reach and a wider paving head. Materials are always free: you are paid for labor, not shopping.
 
 ## Controls
 
@@ -65,7 +65,7 @@ Upgrades: carrying capacity, working speed, mobile supplies, working reach and a
 
 ## Technology
 
-TypeScript (strict) + Three.js + Rapier (WASM physics) + Vite. The game simulation — grid, economy, saves — is independent of the DOM and the renderer; rendering consumes simulation results but cannot mint money. Stable integer grid IDs are the save schema.
+TypeScript (strict) + Three.js + Rapier (WASM physics) + Vite. The game simulation (grid, economy, saves) is independent of the DOM and the renderer; rendering consumes simulation results but cannot mint money. Stable integer grid IDs are the save schema.
 
 The production build is a static `dist/` that any HTTPS static host can serve: seven assets, about 1 MiB gzipped, with an offline service worker. A separate portal build mode exists for embedding platforms; the standalone build contains no ads and no purchase flows.
 
@@ -86,36 +86,36 @@ npm run preview        # serve the production build
 
 ## Documentation
 
-- `GAME_DESIGN.md` — the accepted rules of the game
-- `ART_DIRECTION.md` — visual targets
-- `docs/ARCHITECTURE.md` — module boundaries and technical decisions
-- `docs/ECONOMY.md` — in-job progression and balance
-- `docs/EVOLUTION.md` — notification, equipment-feel and finishing systems
-- `docs/RELEASE.md` — pre-release checklist
-- `docs/STATUS.md` — what is implemented, what is verified, what is still open
-- `THIRD_PARTY_NOTICES.md` — dependencies and reference research
+- `GAME_DESIGN.md`: the accepted rules of the game
+- `ART_DIRECTION.md`: visual targets
+- `docs/ARCHITECTURE.md`: module boundaries and technical decisions
+- `docs/ECONOMY.md`: in-job progression and balance
+- `docs/EVOLUTION.md`: notification, equipment-feel and finishing systems
+- `docs/RELEASE.md`: pre-release checklist
+- `docs/STATUS.md`: what is implemented, what is verified, what is still open
+- `THIRD_PARTY_NOTICES.md`: dependencies and reference research
 
 ## Contributing
 
-Issues and pull requests are welcome. Please read `AGENTS.md` and `docs/ARCHITECTURE.md` first — the project has firm boundaries (simulation purity, no external assets, no speculative features) that are part of its identity. Large changes are best discussed in an issue before writing code.
+Issues and pull requests are welcome. Please read `AGENTS.md` and `docs/ARCHITECTURE.md` first. The project has firm boundaries (simulation purity, no external assets, no speculative features) that are part of its identity. Large changes are best discussed in an issue before writing code.
 
 ## An honest note on quality
 
-Passing tests do not prove the game feels good or hits 60 FPS on your machine. Real-hardware performance, full-campaign human playtesting and wider browser coverage are still open items — see `docs/RELEASE.md` and `docs/STATUS.md` for exactly what has and has not been verified.
+Passing tests do not prove the game feels good or hits 60 FPS on your machine. Real-hardware performance, full-campaign human playtesting and wider browser coverage are still open items: see `docs/RELEASE.md` and `docs/STATUS.md` for exactly what has and has not been verified.
 
 ## License
 
-MIT — see `LICENSE`. Third-party dependencies keep their own licenses; see `THIRD_PARTY_NOTICES.md`.
+MIT: see `LICENSE`. Third-party dependencies keep their own licenses; see `THIRD_PARTY_NOTICES.md`.
 
 ---
 
 ## Türkçe
 
-**Kaldırım: Paving Simulator** — tamamen tarayıcıda çalışan, birinci şahıs taş döşeme oyunu. Önce bir taş, sonra bir sıra, sonunda bütün sokak.
+**Kaldırım: Paving Simulator.** Tamamen tarayıcıda çalışan, birinci şahıs taş döşeme oyunu. Önce bir taş, sonra bir sıra, sonunda bütün sokak.
 
-**[▶ Hemen oyna — kurulum yok, hesap yok](https://kaldirim.space.fast/)**
+**[▶ Hemen oyna: kurulum yok, hesap yok](https://kaldirim.space.fast/)**
 
-Küçük bir sahil kasabasında taş döşeme ustasısın: beş büyük iş, kiralanan ekipman ve on binlerce taş — her biri senin elinden geçiyor.
+Küçük bir sahil kasabasında taş döşeme ustasısın: beş büyük iş, kiralanan ekipman ve on binlerce taş. Her biri senin elinden geçiyor.
 
 - **İlk dakikadan büyük iş.** Eğitim bölümü yok: 11.712 taşlık sahil sokağından 42.380 taşlık eski mahalle avlusuna beş tam şantiye.
 - **Taş başına işçilik.** Döşediğin her yeni taş için işin içinde işçilik kazanırsın. Kiraladığın ekipman ve yükseltmeler yalnızca başka bir işe geçince sıfırlanır; tarayıcıyı kapatmak emeğini silmez.
@@ -125,4 +125,4 @@ Küçük bir sahil kasabasında taş döşeme ustasısın: beş büyük iş, kir
 
 Kendi bilgisayarında çalıştırmak için Node.js 22.12+ ile `npm ci && npm run dev` yeterli. Katkı vermek istersen önce `AGENTS.md` ve `docs/ARCHITECTURE.md` dosyalarına göz at; sorun ve önerilerini GitHub Issues'da bildirebilirsin.
 
-Lisans: MIT — ayrıntılar `LICENSE` dosyasında.
+Lisans: MIT. Ayrıntılar `LICENSE` dosyasında.
