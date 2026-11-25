@@ -1,12 +1,77 @@
-# KALDIRIM
+# Kaldırım: Paving Simulator
 
-**Önce bir taş. Sonra bir sıra. Sonunda bütün sokak.**
+![Kaldırım: Paving Simulator — a coastal town square being paved, stone by stone](marketing/crazygames/cover-landscape-1920x1080.png)
 
-Browser-first, birinci şahıs taş döşeme oyunu. Küçük eğitim görevleri yerine ilk dakikadan büyük bir iş vardır. Aynı işin içinde kazandıkça ekipman kiralanır; başka bir işe geçildiğinde işçilik bakiyesi, ekipmanlar ve yükseltmeler sıfırlanır. Ustalık kayıtları korunur. Tarayıcıyı kapatmak ilerlemeyi sıfırlamaz.
+**One stone. Then a row. Then the whole street.**
 
-## Çalıştırma
+A first-person paving simulator that runs entirely in the browser. You are a paving contractor in a small coastal town: five large jobs, leased equipment, and tens of thousands of stones — every single one placed by you, by hand or by machine.
 
-Node.js 22.12+ önerilir.
+**[▶ Play now — free, no install, no account](https://kaldirim.space.fast/)**
+
+## Screenshots
+
+| | | |
+|---|---|---|
+| ![First-person paving: mallet in hand, interlocking pavers forming a medallion pattern](docs/screenshots/first-person-paving.jpg) | ![Placement preview and supply crates at the edge of the work site](docs/screenshots/placement-preview.jpg) | ![A large plaza taking shape, with color bands and a decorative medallion](docs/screenshots/site-overview.jpg) |
+
+All imagery is captured from the game itself; there are no external assets to photograph.
+
+## The game
+
+- **Big jobs from the first minute.** No training levels, no tiny demos: five complete jobs, from an 11,712-stone seaside sidewalk to a 42,380-stone old-town courtyard.
+- **Wages per stone, not per minute.** Every unique stone you lay pays during the job. Leased equipment and upgrades reset only when you start a different or replayed job — closing the browser never wipes your work.
+- **Honest mechanics.** Paving requires a stable, reachable footprint and a timed working motion. Sweeping the cursor over the ground paints nothing and pays nothing.
+- **Everything procedural.** All geometry, materials, environment and tools are generated with Three.js. All sound is synthesized with Web Audio. No external models, textures or music; no runtime AI requests.
+- **Respectful of the player.** Turkish and English UI, pause anywhere, keyboard access, reduced-motion setting, offline service worker, exportable validated save files. No accounts, no ads of its own, nothing that identifies a player — the standalone build sends nothing at all.
+
+## Jobs
+
+| Job | | Stones |
+|---|---|---:|
+| Seaside Street | L-shaped sidewalk | 11,712 |
+| Market Square | open plaza | 18,080 |
+| Plane Tree Park | connected garden paths | 26,776 |
+| Coastal Walk | promenade with viewing bays | 32,256 |
+| Old Neighborhood | courtyard with garden corners | 42,380 |
+
+## Equipment
+
+Wages are earned inside the job and spent inside the job. Better tools cover more ground per motion:
+
+| Tool | Stones per motion |
+|---|---:|
+| By Hand | 1 |
+| Mechanical Clamp | 6 |
+| Row Layer | 18 |
+| K-48 Paving Machine | 48 |
+
+Upgrades: carrying capacity, working speed, mobile supplies, working reach and a wider paving head. Materials are always free — you are paid for labor, not shopping.
+
+## Controls
+
+| Input | Action |
+|---|---|
+| WASD / Shift | Walk / walk faster |
+| Mouse | Look |
+| Hold left button | Work on a steady target |
+| R or E | Resupply |
+| B | Equipment and upgrades |
+| 1–4 | Switch leased tools |
+| Q | Rotate the working footprint |
+| F | Point at the nearest gap |
+| Tab | Map |
+| P or Esc | Pause / release the mouse |
+| F3 | Draw/FPS diagnostics |
+
+## Technology
+
+TypeScript (strict) + Three.js + Rapier (WASM physics) + Vite. The game simulation — grid, economy, saves — is independent of the DOM and the renderer; rendering consumes simulation results but cannot mint money. Stable integer grid IDs are the save schema.
+
+The production build is a static `dist/` that any HTTPS static host can serve: seven assets, about 1 MiB gzipped, with an offline service worker. A separate portal build mode exists for embedding platforms; the standalone build contains no ads and no purchase flows.
+
+## Running locally
+
+Node.js 22.12+ is recommended.
 
 ```bash
 npm ci
@@ -15,68 +80,49 @@ npm run dev
 
 ```bash
 npm run check          # strict TypeScript + unit tests + production build
-npm run test:e2e       # gerçek tarayıcı / üretim duman testleri
-npm run preview
+npm run test:e2e       # real-browser smoke tests (needs: npx playwright install --with-deps chromium)
+npm run preview        # serve the production build
 ```
 
-Playwright ilk kurulum: `npx playwright install --with-deps chromium`.
+## Documentation
 
-## Oyun
+- `GAME_DESIGN.md` — the accepted rules of the game
+- `ART_DIRECTION.md` — visual targets
+- `docs/ARCHITECTURE.md` — module boundaries and technical decisions
+- `docs/ECONOMY.md` — in-job progression and balance
+- `docs/EVOLUTION.md` — notification, equipment-feel and finishing systems
+- `docs/RELEASE.md` — pre-release checklist
+- `docs/STATUS.md` — what is implemented, what is verified, what is still open
+- `THIRD_PARTY_NOTICES.md` — dependencies and reference research
 
-| İş | Döşenecek taş |
-|---|---:|
-| Sahil Sokağı · köşeli kaldırım | 11.712 |
-| Pazar Meydanı · açık meydan | 18.080 |
-| Çınar Parkı · bağlantılı bahçe yolları | 26.776 |
-| Kıyı Yolu · seyir cepli sahil yolu | 32.256 |
-| Eski Mahalle · köşeleri bahçeli avlu | 42.380 |
+## Contributing
 
-Bu tablo yeni başlatılan işlerin ikinci sürümüdür. Eski kayıtlar kendi alanını, fiyatlarını ve ilerlemesini korur; yeni işe geçişte güncel plan kullanılır. Yeniliği görmek için mevcut kaydı silmek gerekmez.
+Issues and pull requests are welcome. Please read `AGENTS.md` and `docs/ARCHITECTURE.md` first — the project has firm boundaries (simulation purity, no external assets, no speculative features) that are part of its identity. Large changes are best discussed in an issue before writing code.
 
-Her şantiyede taş döşeyerek **o anda** işçilik kazanılır. El işçiliğinden 6 taşlık kıskaca, 18 taşlık sıra aparatına ve 48 taşlık K-48'e geçilir. Taşıma, hız, mobil ikmal, erişim ve geniş başlık yükseltmeleri bulunur. Tüm malzeme ücretsizdir. Son geçişte para kazanılmaz; eksik alanların tamamlanması gerekir.
+## An honest note on quality
 
-Ekipman için para hazır olduğunda nişanı kapatmayan, bir defalık bildirim ve kısa bir ses gelir. Desen panoları tamamlandıkça sade geri bildirim verilir. Yeni işlerin son geçişinde sol tuşu basılı tutup yürürsün; kompaktör uzak nişanı değil hemen önündeki zemini işler. Bitişte geçilebilir önce/sonra gösterimi, sonuçlar ve bitmiş işi serbest gezme vardır.
+Passing tests do not prove the game feels good or hits 60 FPS on your machine. Real-hardware performance, full-campaign human playtesting and wider browser coverage are still open items — see `docs/RELEASE.md` and `docs/STATUS.md` for exactly what has and has not been verified.
 
-## Kontroller
+## License
 
-| Girdi | İşlem |
-|---|---|
-| WASD / Shift | Yürü / hızlı yürü |
-| Fare | Bakış |
-| Sol tuş basılı | Sabit hedefte çalış |
-| R veya E | İkmal |
-| B | Ekipman ve yükseltmeler |
-| 1–4 | Kiralanmış aletler arasında geçiş |
-| Q | Çalışma alanını döndür |
-| F | En yakın eksik alanı göster |
-| Tab | Harita |
-| P veya Esc | Duraklat / fareyi serbest bırak (portalda Esc tam ekrandan da çıkar) |
-| F3 | Çizim/FPS tanılama |
-| P (F3 açıkken) | Yerel performans ve gelişim olay raporunu dışa aktar |
+MIT — see `LICENSE`. Third-party dependencies keep their own licenses; see `THIRD_PARTY_NOTICES.md`.
 
-Fareyi rastgele savurmak taş döşemez: aynı geçerli çalışma alanına erişim içinde nişan alıp aletin hareketini bitirmek gerekir. Mouse basılıyken tamamlanan aynı alana tekrar ücret yazılmaz. Kenar/köşe boşlukları oyun sonunu kilitlemez.
+---
 
-## Teknoloji
+## Türkçe
 
-TypeScript + Three.js + Rapier WASM + Vite. Tüm modeller, yüzey dokuları ve dünya özgün prosedürel Three.js üretimidir. Sesler Web Audio ile sentezlenir. Harici GLB, doku veya müzik indirilmez. AI çalışma zamanı çağrısı ve hesap zorunluluğu yoktur.
+**Kaldırım: Paving Simulator** — tamamen tarayıcıda çalışan, birinci şahıs taş döşeme oyunu. Önce bir taş, sonra bir sıra, sonunda bütün sokak.
 
-Statik `dist/` herhangi bir HTTPS statik sunucuda barındırılabilir. Üretim çıktısı çevrimdışı service worker, yerel kayıt ve kayıt dışa/içe aktarımı içerir. Portal derlemesi için `.env.example` dosyasını inceleyin; canlı ödüllü reklam veya satın alma varmış gibi davranılmaz. Steam wrapper/Steamworks ve mağaza yayını bu depoda tamamlanmış değildir.
+**[▶ Hemen oyna — kurulum yok, hesap yok](https://kaldirim.space.fast/)**
 
-## Proje belgeleri
+Küçük bir sahil kasabasında taş döşeme ustasısın: beş büyük iş, kiralanan ekipman ve on binlerce taş — her biri senin elinden geçiyor.
 
-- `GAME_DESIGN.md`: kabul edilen oyun kuralları
-- `ART_DIRECTION.md`: görsel hedefler
-- `docs/ARCHITECTURE.md`: modül sınırları ve teknik kararlar
-- `docs/ECONOMY.md`: bölüm içi ilerleme ve dengeleme
-- `docs/EVOLUTION.md`: bildirim, iş sürümleri, ekipman hissi ve bitiş sistemi
-- `docs/RELEASE.md`: yayın öncesi kontrol listesi
-- `docs/STATUS.md`: uygulananlar, doğrulamalar ve açık sınırlar
-- `THIRD_PARTY_NOTICES.md`: bağımlılıklar ve araştırma referansları
+- **İlk dakikadan büyük iş.** Eğitim bölümü yok: 11.712 taşlık sahil sokağından 42.380 taşlık eski mahalle avlusuna beş tam şantiye.
+- **Taş başına işçilik.** Döşediğin her yeni taş için işin içinde işçilik kazanırsın. Kiraladığın ekipman ve yükseltmeler yalnızca başka bir işe geçince sıfırlanır; tarayıcıyı kapatmak emeğini silmez.
+- **Dürüst mekanik.** Taş döşemek için sağlam, erişilebilir bir çalışma alanına nişan almak ve aletin hareketini tamamlamak gerekir. Fareyi rastgele savurmak yeri boyamaz, para yazdırmaz.
+- **Her şey prosedürel.** Bütün modeller, yüzeyler ve dünya Three.js ile üretiliyor; sesler Web Audio ile sentezleniyor. Dışarıdan model, doku, müzik yok; yapay zekâ çağrısı yok. Hesap yok, oyunun kendi reklamı yok, oyuncuyu tanımlayan hiçbir veri yok.
+- **Oyuncuya saygı.** Türkçe ve İngilizce arayüz, istediğin yerde duraklatma, klavye erişimi, azaltılmış hareket ayarı, çevrimdışı çalışma ve dışa aktarılabilen kayıt dosyaları.
 
-## Dürüst kalite notu
+Kendi bilgisayarında çalıştırmak için Node.js 22.12+ ile `npm ci && npm run dev` yeterli. Katkı vermek istersen önce `AGENTS.md` ve `docs/ARCHITECTURE.md` dosyalarına göz at; sorun ve önerilerini GitHub Issues'da bildirebilirsin.
 
-Bu sürümün ticari yayına hazır olduğuna yalnızca testlerin geçmesine bakarak karar verilmez. Gerçek donanımda performans, tam kampanya oynanışı, tarayıcılar ve görsel sanat yönetimi için `docs/RELEASE.md` kontrol listesi uygulanmalıdır. Kod testleri oyun hissinin iyi olduğunu veya her cihazda 60 FPS'yi kanıtlamaz.
-
-## Lisans
-
-Bu proje MIT lisansı ile açık kaynaklıdır; ayrıntılar `LICENSE` dosyasındadır. Üçüncü taraf bağımlılıklar kendi lisanslarına tabidir; bkz. `THIRD_PARTY_NOTICES.md`.
+Lisans: MIT — ayrıntılar `LICENSE` dosyasında.
