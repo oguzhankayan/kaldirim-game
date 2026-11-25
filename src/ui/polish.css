@@ -1,0 +1,11 @@
+/* Intentional work guidance: upgrades feel attainable without covering the target. */
+#next-step{position:absolute;left:22px;top:164px;width:294px;padding:13px 18px}
+#next-step strong{display:block;margin:6px 0;font-size:.87rem}
+#next-step small{display:block;color:var(--muted);font-size:.71rem;line-height:1.5;margin-bottom:10px}
+#diagnostics{top:290px}
+.tool-icon svg{width:68px;height:58px}
+.map-legend em{display:inline-block;width:10px;height:10px;background:#78c8ce;margin-left:15px}
+@media(max-width:900px){#next-step{width:245px;top:157px}}
+@media(max-height:680px){#next-step{top:148px;padding:9px 13px}#next-step small{margin-bottom:6px}.home-sheet{padding-top:10px}.home h1{margin-top:24px}.home-actions{margin:18px 0}}
+@media(max-width:600px){#next-step{top:132px;left:10px;width:200px}#next-step small{font-size:.66rem}#work-context{max-width:90vw;white-space:normal;text-align:center}}
+@media(pointer:coarse){#next-step{display:none}#tool-hud{min-width:0;max-width:48vw;gap:8px;bottom:8px}#tool-hud .inventory{min-width:64px}.look-pad{height:50%}}

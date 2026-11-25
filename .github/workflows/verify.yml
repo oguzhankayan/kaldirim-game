@@ -1,0 +1,53 @@
+name: Game quality gate
+on:
+  workflow_dispatch:
+  push:
+    branches: [feat/restore-complete-game, main]
+    paths: ['src/**', 'tests/**', 'e2e/**', 'scripts/**', 'public/**', '*.json', '*.ts', 'index.html', '.github/workflows/verify.yml']
+  pull_request:
+    branches: [main]
+permissions:
+  contents: read
+concurrency:
+  group: quality-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - name: Preserve exact committed source before running tools
+        run: |
+          git archive --format=tar.gz HEAD > /tmp/kaldirim-source.tgz
+          git rev-parse HEAD > /tmp/SOURCE_COMMIT.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: source-snapshot
+          path: |
+            /tmp/kaldirim-source.tgz
+            /tmp/SOURCE_COMMIT.txt
+          retention-days: 14
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install locked dependencies
+        run: npm ci
+      - name: Typecheck, unit tests and release build
+        run: npm run check
+      - name: Install browser
+        run: npx playwright install --with-deps chromium
+      - name: Real-input browser tests
+        timeout-minutes: 18
+        run: npm run test:e2e
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: verification-evidence
+          path: |
+            artifacts/
+            test-results/
+            dist/
+          retention-days: 14
+          if-no-files-found: warn

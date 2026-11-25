@@ -1,0 +1,11 @@
+/* Clear target at 50%/50%; notices never cover the center or capture the mouse. */
+#work-notice { position:absolute; left:50%; top:18%; transform:translateX(-50%); width:max-content; max-width:min(350px,calc(100vw - 32px)); padding:11px 19px; border:1px solid #ccb77b99; border-radius:10px; background:#1d302cf2; color:#f5ecd9; box-shadow:0 7px 24px #14211b35; text-align:center; pointer-events:none; z-index:4; animation:notice-enter .2s ease-out; }
+#work-notice[hidden] { display:none; }
+#work-notice strong { display:block; font-size:15px; font-weight:650; line-height:1.35; }
+#work-notice span { display:block; margin-top:4px; color:#e3c584; font-size:12px; line-height:1.35; }
+#work-notice[data-kind="motif"] { border-color:#c0cbb77a; }
+#work-notice[data-kind="motif"] span { color:#d2dcca; }
+@keyframes notice-enter { from { opacity:0; translate:0 -5px; } to { opacity:1; translate:0 0; } }
+.reduced-motion #work-notice { animation:none; }
+@media(prefers-reduced-motion:reduce) { #work-notice { animation:none; } }
+@media(max-height:500px) { #work-notice { top:22%; padding:7px 12px; max-width:250px; } #work-notice strong { font-size:12px; } #work-notice span { font-size:10px; margin-top:2px; } }

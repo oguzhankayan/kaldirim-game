@@ -1,0 +1,20 @@
+/* No opaque disc over the work. State is also described in the localized context text. */
+#reticle{width:32px;height:32px;background:none;box-shadow:none;color:#eef1e8;pointer-events:none}
+#reticle::before{display:none}
+#reticle svg{display:block;width:100%;height:100%;overflow:visible;fill:none}
+#reticle .reticle-shadow{stroke:#14261f;stroke-width:4;opacity:.7}
+#reticle .reticle-track{stroke:currentColor;stroke-width:1.4;opacity:.85}
+#reticle .reticle-progress{stroke:currentColor;stroke-width:3;stroke-linecap:round}
+#reticle .reticle-dot{fill:#fff9e9;stroke:#15251f;stroke-width:1.2}
+#reticle .reticle-block{display:none;stroke:currentColor;stroke-width:1.8}
+#reticle[data-state=ready]{color:#76cdb2}
+#reticle[data-state=working],#reticle[data-state=partial]{color:#f1c56c}
+#reticle[data-state=blocked]{color:#db8174}
+#reticle[data-state=refilling]{color:#84c7df}
+#reticle[data-state=done]{color:#b9c2ba}
+#reticle[data-state=idle] .reticle-track{stroke-dasharray:2 4;opacity:.5}
+#reticle[data-state=done] .reticle-track{stroke-dasharray:3 3;opacity:.6}
+#reticle[data-state=blocked] .reticle-block{display:block}
+#work-context{top:calc(50% + 29px);border-radius:5px;background:#14261fb3;text-shadow:0 1px 2px #0005;padding:5px 9px}
+#hud-tool-icon{display:flex;width:34px;flex-shrink:0;align-items:center;color:var(--amber)}
+#hud-tool-icon svg{width:34px;height:32px}

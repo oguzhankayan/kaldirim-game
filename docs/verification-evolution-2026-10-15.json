@@ -1,0 +1,32 @@
+{
+  "date": "2026-10-15",
+  "branch": "main",
+  "baseline": "ab1a015cb35e81befa9e914ff24261c78b1e41e8",
+  "runtime_commit": "c7eda8aa42217ee2bf590cce4697373a375ed695",
+  "verified_code_test_commit": "1c733eb9f8764247cbcc0d9d584c28d0ae6e73be",
+  "checks": { "strict_typecheck": "passed", "unit_tests": 83, "unit_files": 17, "production_build": "passed", "postbuild": "passed" },
+  "campaign_simulations": { "legacy_valid_stones": 99840, "revised_valid_stones": 131204, "earned_income_only": true, "excludes": ["travel", "aiming", "human decisions"] },
+  "browser": {
+    "run_id": 38662670646, "job_id": 116187343436, "status": "success", "passed": 10, "failed": 0,
+    "source_artifact_id": 11938949310, "verification_artifact_id": 11939394520,
+    "viewport": [640, 400], "renderer": "Chromium / SwiftShader software rendering",
+    "source_files_matched_locally": 75, "release_files_match_local": true,
+    "captures_inspected": ["equipment-affordable.png", "site-reveal-before.png", "site-reveal-after.png"]
+  },
+  "native_hd_inspection": {
+    "run_id": 38661267681, "job_id": 116182829607, "artifact_id": 11939525485,
+    "commit": "c7eda8aa42217ee2bf590cce4697373a375ed695", "status": "success",
+    "viewport": [1920, 1080], "device_scale_factor": 1, "antialias": true,
+    "captures": 7, "js_console_errors": [], "all_captures_inspected": true,
+    "fixture": "Actual WorldView completed-job state: five revision-2 jobs, close-up and legacy comparison; development-only inspection camera."
+  },
+  "release": { "cache": "d7d66d5de9f826c8", "assets": 7, "raw_mib": 2.75, "gzip_mib": 0.96, "qa_globals_absent": true, "known_warning": "Existing Rapier chunk-size warning" },
+  "compatibility": { "missing_job_revision": 1, "new_job_revision": 2, "legacy_layout_prices_preserved": true, "save_envelope_version": 1, "notice_acknowledgement_saved": true, "new_time_key_suffix": "@2" },
+  "notes": [
+    "Advanced/final states are explicit fixtures; threshold earning, buying, walking, compacting and touring use actual mouse/keyboard input.",
+    "The dense-horizon software-renderer case exhausted wall-clock movement time. Its functional camera now faces the working surface at the same viewport; a separate actual Rapier test checks upward, horizon and downward pitch. No runtime resolution downgrade or requirement removal.",
+    "Local browser navigation was blocked. Authorized ordinary repository CI was used; the policy was not bypassed."
+  ],
+  "not_certified": ["Actual target-hardware 60 FPS", "Temporal-artifact-free rendering", "Human full-campaign balance/retention", "Safari/Firefox/touch", "Extended offline/save/context durability"],
+  "not_performed": ["Public deployment", "Live ads/payments", "Steamworks/store submission"]
+}

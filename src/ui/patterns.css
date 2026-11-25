@@ -1,0 +1,13 @@
+.pattern-label { color: var(--muted); font-size: .85rem; line-height: 1.5; margin: .5rem 0 1rem; }
+.pattern-label strong { color: var(--cream); }
+.pattern-switch { display: flex; gap: .5rem; margin: .8rem 0; }
+.pattern-switch button[aria-pressed="true"] { background: var(--amber); color: var(--pine); border-color: var(--amber); }
+.pattern-swatches { display: flex; flex-wrap: wrap; align-items: center; gap: .55rem 1rem; font-size: .8rem; margin: .7rem 0; }
+.pattern-swatches span { display: inline-flex; align-items: center; gap: .4rem; }
+.pattern-swatches i { width: .8rem; height: .8rem; border-radius: 2px; border: 1px solid #ffffff35; }
+.pattern-card { display: grid; grid-template-columns: minmax(130px, 220px) 1fr; gap: 1rem; align-items: center; margin: 1rem 0; padding: .9rem; border: 1px solid var(--line); border-radius: 12px; text-align: left; background: #142e2440; }
+.pattern-card canvas { width: 100%; height: auto; border-radius: 4px; display: block; }
+.pattern-card p { font-size: .85rem; line-height: 1.5; margin: .5rem 0; color: var(--muted); }
+.job-list button { display: flex; flex-direction: column; gap: .3rem; }
+.job-list button small { font-size: .78rem; font-weight: 400; opacity: .85; }
+@media (max-width: 550px) { .pattern-card { grid-template-columns: 1fr; } .pattern-card canvas { width: min(100%, 260px); margin: auto; } }

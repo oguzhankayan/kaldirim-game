@@ -1,0 +1,23 @@
+name: Development toolchain
+on:
+  workflow_dispatch:
+  push:
+    branches: [feat/full-game]
+    paths: [package.json]
+permissions:
+  contents: read
+jobs:
+  toolchain:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --ignore-scripts
+      - run: tar -czf toolchain.tgz node_modules package-lock.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: development-toolchain
+          path: toolchain.tgz
+          retention-days: 2

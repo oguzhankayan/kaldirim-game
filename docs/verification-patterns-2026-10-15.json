@@ -1,0 +1,57 @@
+{
+  "date": "2026-10-15",
+  "branch": "main",
+  "baseline": "5ece3273e7b656a13283c34bc0071d1b8c5913f4",
+  "testedCommit": "533b5bf60c8c33458e1f79954a60e7f292c2ed2a",
+  "feature": "Five deterministic paving color inlays, matching ground ghosts, progress/plan maps and completion cards",
+  "unitTests": { "passed": 67, "failed": 0, "files": 13, "strictTypecheck": "passed", "campaignStones": 99840 },
+  "browserTests": {
+    "runId": 38652708573,
+    "jobId": 116155090067,
+    "artifactId": 11936270547,
+    "passed": 8,
+    "failed": 0,
+    "durationMinutes": 6.3,
+    "viewport": [640, 400],
+    "renderer": "Chromium with SwiftShader software rendering",
+    "scope": "Existing gameplay, save, equipment, input and production checks plus read-only map modes, real mouse placement, reload preservation and TR/EN pattern UI",
+    "testCorrection": "The first new browser test compared a canvas containing the subpixel player arrow. Its only two differing pixels were at x=11, y=16/17. The corrected comparison masks only the arrow's 32x32 spawn corner, separately checks player pose and saved gameplay fields, and leaves the entire interior pattern comparison intact. Unit tests compare every border and saved cell. No product code was changed to make this test pass.",
+    "limitations": "QA aiming and existing advanced-stage fixtures are used. This is not a manual campaign playthrough or hardware FPS benchmark."
+  },
+  "visualInspection": {
+    "runId": 38651354136,
+    "artifactId": 11934823156,
+    "commit": "2da62f6a5450d22b73710912b35879248822c2bf",
+    "passed": true,
+    "imageCount": 6,
+    "resolution": [1920, 1080],
+    "devicePixelRatio": 1,
+    "antialias": true,
+    "javascriptAndConsoleErrors": [],
+    "images": ["sahil-complete-1920x1080.png", "pazar-complete-1920x1080.png", "cinar-complete-1920x1080.png", "kiyi-complete-1920x1080.png", "mahalle-complete-1920x1080.png", "sahil-close-1920x1080.png"],
+    "method": "Actual WorldView, StoneField, procedural materials and paver geometry with explicitly completed-job fixtures and an inspection camera. All six captures opened and visually inspected. Not concept art, a shipping camera change or evidence of a human playthrough."
+  },
+  "build": {
+    "passed": true,
+    "rawMiB": 2.73,
+    "gzipMiB": 0.96,
+    "shippingAssets": 7,
+    "cacheHash": "3220c24165fcf472",
+    "inspectionAndQAGlobalsAbsent": true,
+    "warning": "Existing Rapier chunk exceeds the 750 kB warning threshold; total release budget passes."
+  },
+  "compatibility": {
+    "saveFormatChanged": false,
+    "cellIdsChanged": false,
+    "geometryOrCourseOffsetsChanged": false,
+    "economyOrDwellChanged": false,
+    "legacyAppearance": "Existing placed stones adopt the new fixed pattern intentionally; money, tools, inventory and completion progress remain unchanged."
+  },
+  "performance": {
+    "perColorMaterialsOrMeshesAdded": false,
+    "patternLookup": "Precomputed and cached per level; constant-time per-cell lookup, not a per-frame field scan",
+    "resolutionReduced": false,
+    "fps60Certified": false,
+    "temporalArtifactFreeCertified": false
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "id": "./",
+  "name": "Kaldırım: Paving Simulator",
+  "short_name": "KALDIRIM",
+  "description": "Birinci şahıs taş döşeme oyunu. A familiar paving job, one stone at a time.",
+  "lang": "tr",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#203b30",
+  "theme_color": "#203b30",
+  "icons": [{ "src": "./favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }]
+}

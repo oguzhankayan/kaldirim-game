@@ -1,0 +1,63 @@
+name: Patch development toolchain security
+on:
+  workflow_dispatch:
+  push:
+    branches: [feat/restore-complete-game]
+    paths: [.github/workflows/toolchain-security.yml]
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feat/restore-complete-game
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Use npm with the optional peer graph fix
+        run: npm install --global npm@11.19.0
+      - name: Resolve explicit fixes in an isolated dependency graph
+        run: |
+          PATCH_DIR=$(mktemp -d)
+          cp package.json "$PATCH_DIR/package.json"
+          node --input-type=module - "$PATCH_DIR/package.json" <<'JS'
+          import {readFileSync,writeFileSync} from 'node:fs';
+          const path = process.argv[2];
+          const pkg = JSON.parse(readFileSync(path,'utf8'));
+          pkg.devDependencies.vite = '7.3.7';
+          pkg.devDependencies.vitest = '4.1.11';
+          writeFileSync(path,JSON.stringify(pkg,null,2)+'\n');
+          JS
+          (cd "$PATCH_DIR" && npm install --package-lock-only --ignore-scripts)
+          cp "$PATCH_DIR/package.json" package.json
+          cp "$PATCH_DIR/package-lock.json" package-lock.json
+      - name: Preserve dependency updates immediately
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add package.json package-lock.json
+          if ! git diff --cached --quiet; then
+            git commit -m 'build: patch Vite and Vitest advisories with a reproducible lockfile'
+            git pull --rebase origin feat/restore-complete-game
+            git push origin HEAD:feat/restore-complete-game
+          fi
+      - run: npm ci
+      - run: npm run check
+      - name: Preserve audit, source and usable toolchain
+        if: always()
+        run: |
+          mkdir -p /tmp/toolchain-evidence
+          npm audit --json > /tmp/toolchain-evidence/npm-audit.json || true
+          git archive --format=tar.gz HEAD > /tmp/toolchain-evidence/source.tgz
+          git rev-parse HEAD > /tmp/toolchain-evidence/COMMIT.txt
+          if [ -d node_modules ]; then tar -czf /tmp/toolchain-evidence/toolchain.tgz node_modules package-lock.json; fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: patched-toolchain
+          path: /tmp/toolchain-evidence/
+          retention-days: 7

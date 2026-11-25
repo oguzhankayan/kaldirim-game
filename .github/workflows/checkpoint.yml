@@ -1,0 +1,77 @@
+name: Apply verified checkpoint
+on:
+  push:
+    branches: [feat/restore-complete-game]
+    paths: [.changes/checkpoint.json]
+permissions:
+  contents: write
+concurrency:
+  group: checkpoint-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  checkpoint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Apply exact validated replacements
+        run: |
+          python - <<'PY'
+          import json, hashlib, pathlib
+          source = pathlib.Path('.changes/checkpoint.json')
+          if not source.exists():
+              raise SystemExit('Checkpoint already consumed; do not overwrite newer work')
+          request = json.loads(source.read_text())
+          staged = []
+          for edit in request['files']:
+              path = pathlib.Path(edit['path'])
+              if path.is_absolute() or '..' in path.parts or '.git' in path.parts:
+                  raise ValueError('Unsafe checkpoint path')
+              raw = path.read_bytes()
+              if hashlib.sha256(raw).hexdigest() != edit['sha256']:
+                  raise ValueError('Concurrent change detected: ' + str(path))
+              text = raw.decode('utf-8')
+              for change in edit.get('replace', []):
+                  if text.count(change['old']) != change.get('count', 1):
+                      raise ValueError('Unexpected replacement count: ' + str(path))
+                  text = text.replace(change['old'], change['new'])
+              text += edit.get('append', '')
+              staged.append((path, text))
+          for path, text in staged:
+              path.write_text(text, encoding='utf-8')
+          pathlib.Path('/tmp/checkpoint-message').write_text(request['message'], encoding='utf-8')
+          source.unlink()
+          PY
+      - name: Preserve dependency lock
+        run: npm install --package-lock-only --ignore-scripts
+      - name: Commit source before verification
+        run: |
+          git config user.name 'Kaldirim Checkpoint'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -F /tmp/checkpoint-message
+          git push origin "HEAD:$GITHUB_REF_NAME"
+      - run: npm ci
+      - run: npm run check
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:e2e
+      - name: Preserve evidence and committed source
+        if: always()
+        run: |
+          git rev-parse HEAD > SNAPSHOT_COMMIT.txt
+          tar -czf /tmp/kaldirim-source.tgz --exclude=.git --exclude=node_modules --exclude=.recovery --exclude=dist --exclude=artifacts --exclude=test-results .
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: checkpoint-evidence
+          path: |
+            /tmp/kaldirim-source.tgz
+            artifacts/
+            test-results/
+            dist/
+          retention-days: 14

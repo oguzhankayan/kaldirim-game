@@ -1,0 +1,52 @@
+{
+  "date": "2026-10-14",
+  "branch": "feat/restore-complete-game",
+  "gameplayCommit": "85451cfe92791484a22463fb70d0ecc268685c16",
+  "unitTests": { "passed": 42, "failed": 0, "files": 6 },
+  "browserTests": {
+    "passed": 6,
+    "failed": 0,
+    "runId": 38631161179,
+    "jobId": 116083017987,
+    "durationMinutes": 4.0,
+    "viewport": [640, 400],
+    "renderer": "Chromium / SwiftShader CPU rendering",
+    "scope": ["actual mouse placement and purchase", "refill and save/reload", "pause and keyboard focus", "fixture-assisted final compaction and next-job reset", "TR/EN settings", "production no-debug smoke", "High antialiasing and scale attributes"],
+    "limits": "Functional tests, not a 60 FPS benchmark or a manually played campaign. QA aiming and final-stage fixtures are explicitly used."
+  },
+  "dependencies": {
+    "commit": "cbd79e16e68efe15f48673fdebb76abee1ebcfe6",
+    "runId": 38632308442,
+    "vite": "7.3.7",
+    "vitest": "4.1.11",
+    "npmResolver": "11.19.0",
+    "audit": { "low": 0, "moderate": 0, "high": 0, "critical": 0, "total": 0 },
+    "typecheckAnd42TestsAndBuild": "passed in Actions and independently rerun against downloaded source",
+    "releaseOutput": "All ten dist files byte-for-byte identical to the earlier six-test browser-verified build; verified locally."
+  },
+  "build": {
+    "rawMiB": 2.72,
+    "gzipMiB": 0.95,
+    "shippingAssets": 7,
+    "cacheHash": "31b4e933cb5e9683",
+    "remainingWarning": "Rapier physics chunk exceeds the configured 750 kB chunk warning; overall postbuild budget passes."
+  },
+  "graphics": {
+    "fullHdInspectionRunId": 38632414371,
+    "fullHdArtifactId": 11927680618,
+    "fullHdCommit": "f5d12846ff02f02a18c8259edfa675d53435686a",
+    "viewport": [1920, 1080],
+    "quality": "high",
+    "deviceScaleFactor": 1,
+    "actualRenderScale": 1,
+    "actualAntialias": true,
+    "capturedHighImages": ["01-title-1080p-high.png", "02-first-person-1080p-high.png", "03-showcase-fixture-1080p-high.png"],
+    "errors": [],
+    "inspected": "Actual native 1080p first-person and neighborhood stills inspected. Close-up paver no longer stretches the original low-density 128px noise. HUD fits the desktop viewport. The neighborhood showcase is a labeled fixture, not a played campaign.",
+    "fps60Certified": false,
+    "noArtifactsCertified": false,
+    "softwareProbe": {"samples": 5, "averageFps": 0.22843984721943034, "worstFrameMs": 15082.8},
+    "softwareProbeLimit": "Cold CPU SwiftShader capture is extremely slow; five samples are insufficient for a performance claim and cannot represent actual GPU hardware. This is not a 60 FPS pass.",
+    "requiredNext": "Moving-image/frame pacing tests on actual supported GPUs at the intended resolution and refresh rate; assess sustained 60 FPS, shimmer, shadow stability and thermal behavior."
+  }
+}

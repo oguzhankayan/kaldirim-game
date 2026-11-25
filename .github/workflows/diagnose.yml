@@ -1,0 +1,73 @@
+name: Diagnose browser presentation
+on:
+  workflow_dispatch:
+  push:
+    branches: [feat/restore-complete-game]
+    paths: [.github/workflows/diagnose.yml]
+permissions:
+  contents: read
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Record dependency audit
+        run: |
+          mkdir -p artifacts/diagnostic
+          npm audit --json > artifacts/diagnostic/npm-audit.json || true
+      - name: Observe browser clocks and input in headless and display-backed modes
+        run: |
+          cat > diagnostic.mjs <<'JS'
+          import { chromium } from '@playwright/test';
+          import { spawn } from 'node:child_process';
+          import { writeFile } from 'node:fs/promises';
+          const server = spawn(process.execPath, ['node_modules/vite/bin/vite.js','--host','127.0.0.1','--port','4182'], {stdio:'inherit'});
+          const reports = [];
+          const save = () => writeFile('artifacts/diagnostic/report.json', JSON.stringify(reports, null, 2));
+          for (let n=0;n<50;n++){try{if((await fetch('http://127.0.0.1:4182')).ok)break;}catch{}await new Promise(r=>setTimeout(r,200));}
+          try {
+            for (const mode of ['shell','chromium','headed']) {
+              const report = { mode, errors:[], samples:[] }; reports.push(report);
+              let browser;
+              try {
+                browser = await chromium.launch({headless:mode!=='headed', ...(mode==='chromium'?{channel:'chromium'}:{}), args:['--use-angle=swiftshader','--enable-unsafe-swiftshader','--no-sandbox']});
+                const page = await browser.newPage({viewport:{width:960,height:640}});
+                page.setDefaultTimeout(20000);
+                page.on('pageerror',e=>report.errors.push(e.message));
+                page.on('console',m=>{if(m.type()==='error')report.errors.push(m.text());});
+                await page.addInitScript(()=>{
+                  localStorage.setItem('kaldirim.settings.v1',JSON.stringify({quality:'low',reducedMotion:true,volume:0,ambient:false}));
+                  window.__probe = {scheduled:0,delivered:0,events:[],last:0,frameErrors:[]};
+                  const original = window.requestAnimationFrame.bind(window);
+                  window.requestAnimationFrame = callback => {window.__probe.scheduled++; return original(t=>{window.__probe.delivered++;window.__probe.last=t;try{return callback(t);}catch(e){window.__probe.frameErrors.push(String(e));throw e;}});};
+                  for(const event of ['pointerlockchange','pointerlockerror','mousedown','mouseup','visibilitychange']) document.addEventListener(event,e=>window.__probe.events.push({type:event,button:e.button,locked:!!document.pointerLockElement,hidden:document.hidden,time:performance.now()}));
+                });
+                await page.goto('http://127.0.0.1:4182/?qa=1');
+                await page.waitForFunction(()=>!!window.__KALDIRIM_QA__);
+                await page.locator('[data-action="fresh"]').click();
+                await page.mouse.down();
+                for(let i=0;i<8;i++){
+                  await page.waitForTimeout(500);
+                  report.samples.push(await page.evaluate(()=>({probe:window.__probe,state:window.__KALDIRIM_QA__.read(),hidden:document.hidden,focus:document.hasFocus(),now:performance.now()})));
+                  await save();
+                }
+                await page.mouse.up();
+                await page.screenshot({path:`artifacts/diagnostic/${mode}.png`,timeout:10000});
+              } catch(e) {report.errors.push(String(e));}
+              finally {await save(); await browser?.close();}
+            }
+          } finally {server.kill();await save();}
+          JS
+          xvfb-run -a node diagnostic.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: browser-diagnostic
+          path: artifacts/diagnostic/
+          retention-days: 14

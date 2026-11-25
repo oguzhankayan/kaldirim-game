@@ -1,0 +1,60 @@
+name: High quality 1080p inspection
+on:
+  workflow_dispatch:
+  push:
+    branches: [feat/restore-complete-game]
+    paths: [.github/workflows/visual-hd.yml]
+permissions:
+  contents: read
+jobs:
+  visual:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Capture real High preset frames without reducing resolution
+        run: |
+          cat > capture-hd.mjs <<'JS'
+          import { chromium } from '@playwright/test';
+          import { spawn, execFileSync } from 'node:child_process';
+          import { mkdir, writeFile } from 'node:fs/promises';
+          await mkdir('artifacts/hd', {recursive:true});
+          const report = {commit:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),viewport:{width:1920,height:1080},deviceScaleFactor:1,quality:'high',errors:[],readings:[],note:'Native 1080p still-image inspection on CPU SwiftShader, NOT a 60 FPS certification. The showcase screenshot uses a marked development fixture.'};
+          const server = spawn(process.execPath,['node_modules/vite/bin/vite.js','--host','127.0.0.1','--port','4184','--strictPort'],{stdio:'inherit'});
+          let browser;
+          try {
+            for(let n=0;n<50;n++){try{if((await fetch('http://127.0.0.1:4184')).ok)break;}catch{}await new Promise(r=>setTimeout(r,200));}
+            browser = await chromium.launch({channel:'chromium',args:['--use-angle=swiftshader','--enable-unsafe-swiftshader','--no-sandbox']});
+            const page = await browser.newPage({viewport:report.viewport,deviceScaleFactor:1});
+            page.setDefaultTimeout(60000);
+            page.on('pageerror',e=>report.errors.push(e.message));
+            page.on('console',m=>{if(m.type()==='error')report.errors.push(m.text());});
+            await page.addInitScript(()=>localStorage.setItem('kaldirim.settings.v1',JSON.stringify({quality:'high',volume:0,ambient:false,reducedMotion:true})));
+            await page.goto('http://127.0.0.1:4184/?qa=1');
+            await page.waitForFunction(()=>!!window.__KALDIRIM_QA__);
+            await page.screenshot({path:'artifacts/hd/01-title-1080p-high.png',timeout:60000});
+            await page.locator('[data-action="fresh"]').click();
+            await page.waitForFunction(()=>!!document.pointerLockElement);
+            await page.mouse.down();
+            try {await page.waitForFunction(()=>window.__KALDIRIM_QA__.read().stones>0,{},{timeout:60000});} finally {await page.mouse.up();}
+            report.readings.push(await page.evaluate(()=>window.__KALDIRIM_QA__.read()));
+            await page.screenshot({path:'artifacts/hd/02-first-person-1080p-high.png',timeout:60000});
+            await page.keyboard.press('Escape');
+            await page.evaluate(()=>window.__KALDIRIM_QA__.showcase());
+            await page.screenshot({path:'artifacts/hd/03-showcase-fixture-1080p-high.png',timeout:60000});
+            if(report.errors.length)throw Error(report.errors.join('\n'));
+          } catch(e) {report.errors.push(String(e));process.exitCode=1;}
+          finally {await writeFile('artifacts/hd/report.json',JSON.stringify(report,null,2));await browser?.close();server.kill();}
+          JS
+          node capture-hd.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: high-quality-1080p
+          path: artifacts/hd/
+          retention-days: 14

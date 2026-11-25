@@ -1,0 +1,27 @@
+name: Recover original game source
+on:
+  push:
+    branches: [recovery/source-rescue]
+    paths: ['.recovery/**', '.github/workflows/recover-source.yml']
+permissions:
+  contents: write
+jobs:
+  recover:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 .recovery/recover.py
+      - name: Preserve recovered files on the recovery branch
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add .
+          git diff --cached --quiet || git commit -m 'recovery: restore complete original files from uploaded source prefix'
+          git push origin HEAD:recovery/source-rescue
+      - name: Create independent source backup
+        run: tar --exclude=.git -czf /tmp/kaldirim-recovered-source.tgz .
+      - uses: actions/upload-artifact@v4
+        with:
+          name: kaldirim-recovered-source
+          path: /tmp/kaldirim-recovered-source.tgz
+          retention-days: 30

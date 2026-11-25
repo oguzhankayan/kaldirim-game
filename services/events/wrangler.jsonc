@@ -1,0 +1,11 @@
+{
+  "name": "kaldirim-events",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-11-01",
+  "d1_databases": [
+    { "binding": "DB", "database_name": "kaldirim-events", "database_id": "cdf69145-2022-4875-9bc2-515f6fabe470" }
+  ],
+  "routes": [
+    { "pattern": "kaldirim-events.creativefactory.tr", "custom_domain": true }
+  ]
+}

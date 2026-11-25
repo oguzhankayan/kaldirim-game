@@ -1,0 +1,52 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Paving pattern engine fixture</title><link rel="icon" href="data:,"><style>html,body{margin:0;overflow:hidden}canvas{display:block}</style></head><body><script type="module">
+// Development-only rendering fixture. Uses the real WorldView/StoneField/materials,
+// but prepares completed jobs and an inspection camera. Not a manual playthrough or FPS test.
+import * as T from 'three';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+import { LEVELS } from '/src/game/content.ts';
+import { GameSession } from '/src/game/session.ts';
+import { WorldView } from '/src/render/world.ts';
+import { Materials } from '/src/render/materials.ts';
+import { patternDefinition } from '/src/game/patterns.ts';
+if (!import.meta.env.DEV) throw new Error('Inspection fixture must not ship');
+const query = new URLSearchParams(location.search), level = Number(query.get('level') || 0);
+if (!Number.isInteger(level) || !LEVELS[level]) throw new Error('Invalid inspection level');
+const session = query.get('revision') === '2' ? GameSession.newJob(level) : new GameSession(level), grid = session.grid;
+grid.place(Array.from(grid.valid.keys()).filter(i => grid.valid[i]));
+for (let p = 0; p < grid.compacted.length; p++) grid.compact(p);
+const renderer = new T.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
+renderer.setPixelRatio(1); renderer.setSize(innerWidth, innerHeight);
+renderer.outputColorSpace = T.SRGBColorSpace; renderer.toneMapping = T.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.12;
+renderer.shadowMap.enabled = true; renderer.shadowMap.type = T.PCFSoftShadowMap;
+document.body.append(renderer.domElement);
+const materials = new Materials(); materials.setAnisotropy(renderer.capabilities.getMaxAnisotropy());
+const world = new WorldView(session, materials); world.reducedMotion = true; world.update(0, 0, new T.Vector3());
+const scene = new T.Scene(); scene.background = new T.Color(grid.spec.sky); scene.add(world.group);
+scene.add(new T.HemisphereLight('#e5eee2', '#69735a', 1.8));
+const sun = new T.DirectionalLight('#fff0d5', 3); sun.position.set(-25, 35 * grid.spec.sun + 10, 18); sun.castShadow = true;
+sun.shadow.bias = -.00035; sun.shadow.normalBias = .025; sun.shadow.mapSize.set(2048, 2048);
+const extent = Math.max(grid.width, grid.depth) / 2 + 18;
+Object.assign(sun.shadow.camera, { left: -extent, right: extent, top: extent, bottom: -extent, near: 1, far: 180 });
+sun.shadow.camera.updateProjectionMatrix(); scene.add(sun, sun.target);
+const room = new RoomEnvironment(), pmrem = new T.PMREMGenerator(renderer), env = pmrem.fromScene(room, .02);
+scene.environment = env.texture; scene.environmentIntensity = .25; room.dispose(); pmrem.dispose();
+const camera = new T.PerspectiveCamera(44, innerWidth / innerHeight, .1, 350);
+if (query.has('close')) { camera.position.set(-3.2, 2.9, -grid.depth / 2 + 7); camera.lookAt(-1, 0, -grid.depth / 2 + 3.5); }
+else {
+  const direction = new T.Vector3(.18, 1, .62).normalize();
+  let distance = Math.max(grid.width, grid.depth);
+  for (let attempt = 0; attempt < 50; attempt++) {
+    camera.position.copy(direction).multiplyScalar(distance); camera.lookAt(0, 0, 0); camera.updateMatrixWorld(true);
+    const points = [-1, 1].flatMap(x => [-1, 1].map(z => new T.Vector3(x * (grid.width / 2 + 1), 0, z * (grid.depth / 2 + 1)).project(camera)));
+    if (points.every(p => Math.abs(p.x) < .88 && Math.abs(p.y) < .86)) break;
+    distance *= 1.06;
+  }
+}
+renderer.render(scene, camera); renderer.getContext().finish();
+const gl = renderer.getContext(), info = gl.getExtension('WEBGL_debug_renderer_info');
+window.__PATTERN_CAPTURE__ = { level, revision: session.jobRevision, job: grid.spec.id, pattern: patternDefinition(grid.spec).id, stones: grid.count,
+  completed: grid.finished, drawCalls: renderer.info.render.calls, triangles: renderer.info.render.triangles,
+  width: renderer.domElement.width, height: renderer.domElement.height, antialias: gl.getContextAttributes().antialias,
+  renderer: String(gl.getParameter(info ? info.UNMASKED_RENDERER_WEBGL : gl.RENDERER)),
+  note: 'Real engine world and geometry with completed-job fixture and inspection camera. Static capture, not FPS certification.' };
+</script></body></html>

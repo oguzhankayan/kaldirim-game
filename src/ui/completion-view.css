@@ -1,0 +1,6 @@
+#overlay.reveal { background:none; backdrop-filter:none; justify-content:center; align-items:flex-end; padding:24px; }
+.reveal-sheet { max-width:540px; text-align:center; margin:0 auto; padding:18px 26px; background:#1d302cf0; border:1px solid #ddc99d88; border-radius:14px; box-shadow:0 8px 24px #14211b44; }
+.reveal-sheet h2 { margin:5px 0 14px; }
+.reveal-sheet .eyebrow { color:#e7c789; }
+.completion-actions { display:flex; flex-wrap:wrap; gap:8px; margin:12px 0; }
+@media(max-height:500px) { .reveal-sheet { padding:9px 18px; } .reveal-sheet h2 { font-size:22px; margin:5px 0; } }
